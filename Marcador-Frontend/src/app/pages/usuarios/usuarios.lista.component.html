@@ -1,0 +1,37 @@
+<section class="wrap">
+    <header class="hdr">
+        <button class="btn" [routerLink]="['/dashboard']">← Regresar</button>
+        <h2>Gestión de Usuarios</h2>
+        <div class="actions">
+            <button class="btn primary" (click)="mostrarForm = true">+ Nuevo usuario</button>
+        </div>
+    </header>
+
+    <div class="filters">
+        <input type="text" placeholder="Buscar por username..." [(ngModel)]="search" (input)="cargar()" />
+    </div>
+
+    <div *ngIf="cargando()">Cargando...</div>
+    <div *ngIf="error()">{{ error() }}</div>
+
+    <table class="tbl" *ngIf="!cargando()">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th style="width: 180px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let u of usuarios()">
+                <td>{{ u.username }}</td>
+                <td>{{ u.roleName }}</td>
+                <td>
+                    <button class="btn danger" (click)="eliminar(u)">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <app-usuario-form *ngIf="mostrarForm" (saved)="cargar(); mostrarForm = false" (cancelled)="mostrarForm = false">
+    </app-usuario-form>
+</section>

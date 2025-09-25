@@ -1,0 +1,19 @@
+<div class="form-container">
+    <h3>{{ usuario.id ? 'Editar Usuario' : 'Nuevo Usuario' }}</h3>
+
+    <label>Usuario</label>
+    <input [(ngModel)]="usuario.username" placeholder="Usuario" />
+
+    <label *ngIf="!usuario.id">Contraseña</label>
+    <input *ngIf="!usuario.id" type="password" [(ngModel)]="usuario['password']" placeholder="Contraseña" />
+
+    <label>Rol</label>
+    <select [(ngModel)]="usuario['roleId']">
+        <option *ngFor="let r of roles" [value]="r.id">{{ r.name }}</option>
+    </select>
+
+    <div class="actions">
+        <button class="btn primary" (click)="guardar()">💾 Guardar</button>
+        <button class="btn" (click)="cancelled.emit()">Cancelar</button>
+    </div>
+</div>

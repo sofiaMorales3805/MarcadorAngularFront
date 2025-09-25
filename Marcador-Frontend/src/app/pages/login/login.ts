@@ -43,7 +43,7 @@ export class Login {
 
   ngOnInit() {
     if (this.auth.isAuthenticated()) {
-      this.router.navigate(['/persons']);
+      this.router.navigate(['/dashboard']);
     }
   }
 
@@ -53,10 +53,10 @@ export class Login {
       this.auth.login(loginDto).subscribe({
         next: (res) => {
           this.auth.saveLoginData(res);
-          this.router.navigate(['/persons']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
-          this.error = 'Credenciales inválidas.';
+          this.error = '❌ Credenciales inválidas.';
           console.error(err);
         },
       });
