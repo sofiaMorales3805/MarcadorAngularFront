@@ -1,3 +1,17 @@
+/**
+ * Servicio del marcador/partido en tiempo real.
+ *
+ * Capacidades:
+ * - Leer estado global y estado del tiempo (cronómetro).
+ * - Sumar/restar puntos, registrar faltas.
+ * - Avanzar cuartos y gestionar prórrogas.
+ * - Iniciar/pausar/reanudar/reiniciar reloj.
+ * - Renombrar equipos (en ficha activa o creando nueva).
+ * - Finalizar/terminar partido (manual/automático) y crear nuevo.
+ *
+ * Base URL: `Global.url`.
+ */
+
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';

@@ -4,6 +4,7 @@ import { PublicoComponent } from './publico/tablero-publico.component';
 import { Login } from './pages/login/login';
 import { RegistroUsuarios } from './pages/registro-usuarios/registro-usuarios';
 import { authGuard } from './guards/auth-guard';
+import { RoleGuard } from './guards/role-guard';
 import { UsuariosListaComponent } from './pages/usuarios/usuarios.lista.component';
 import { RolesListaComponent } from './pages/roles/roles.lista.component';
 
@@ -15,7 +16,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: RegistroUsuarios },
 
-  // Dashboard (lazy, protegido)
+  // Dashboard (para cualquier autenticado: Admin o User)
   {
     path: 'dashboard',
     loadComponent: () =>
@@ -37,7 +38,8 @@ export const routes: Routes = [
       import('./pages/equipos/equipos-lista.component')
         .then(m => m.EquiposListaComponent),
     title: 'Gestión de Equipos',
-    canActivate: [authGuard]
+    canActivate: [authGuard, RoleGuard],
+    data: { roles: ['Admin'] } // <-- Admin
   },
 
   // Jugadores (sección Admin)
@@ -47,7 +49,8 @@ export const routes: Routes = [
       import('./pages/jugadores/jugadores-lista.component')
         .then(m => m.JugadoresListaComponent),
     title: 'Gestión de Jugadores',
-    canActivate: [authGuard]
+    canActivate: [authGuard, RoleGuard],
+    data: { roles: ['Admin'] } // <-- Admin
   },
 
   // Usuarios (sección Admin)
@@ -57,18 +60,22 @@ export const routes: Routes = [
       import('./pages/usuarios/usuarios.lista.component')
         .then(m => m.UsuariosListaComponent),
     title: 'Gestión de Usuarios',
-    canActivate: [authGuard]
+    canActivate: [authGuard, RoleGuard],
+    data: { roles: ['Admin'] } // <-- Admin
   },
 
-  // Roles y Permisos (sección Admin)
+  // Roles  (sección Admin)
   {
     path: 'admin/roles',
     loadComponent: () =>
       import('./pages/roles/roles.lista.component')
         .then(m => m.RolesListaComponent),
     title: 'Gestión de Roles',
-    canActivate: [authGuard]
+    canActivate: [authGuard, RoleGuard],
+    data: { roles: ['Admin'] } // <-- Admin
   },
+
+
 
   // Wildcard
   { path: '**', redirectTo: 'login' }

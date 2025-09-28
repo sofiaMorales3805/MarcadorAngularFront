@@ -1,4 +1,8 @@
-// src/app/servicios/equipos.service.ts
+/**
+ * Servicio de equipos: listado, paginado, detalle y CRUD.
+ * Maneja subida/borrado de logos mediante formularios (FormData).
+ * Base URL: `Global.url`.
+ */
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
