@@ -1,75 +1,97 @@
 import { Routes } from '@angular/router';
-import { TableroComponent } from './pages/tablero.component';
-import { PublicoComponent } from './publico/tablero-publico.component';
-import { Login } from './pages/login/login';
-import { RegistroUsuarios } from './pages/registro-usuarios/registro-usuarios';
-import { authGuard } from './guards/auth-guard';
-import { UsuariosListaComponent } from './pages/usuarios/usuarios.lista.component';
-import { RolesListaComponent } from './pages/roles/roles.lista.component';
+import { TableroComponent } from './caracteristicas/tablero.component';
+import { TableroPublicoComponent } from './publico/tablero-publico.component';
+import { BracketComponent } from './pages/torneos/bracket.component';
+
 
 export const routes: Routes = [
-  // Arrancar en login
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // Arrancar en Dashboard
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
-  // Login & Registro
-  { path: 'login', component: Login },
-  { path: 'register', component: RegistroUsuarios },
+  // Operación/Visualización existentes
+    { path: 'publico/:id', loadComponent: () => import('./publico/tablero-publico.component').then(m => m.TableroPublicoComponent) },
+  { path: 'publico',     loadComponent: () => import('./publico/tablero-publico.component').then(m => m.TableroPublicoComponent) },
+  { path: 'control', component: TableroComponent },
+  { path: 'publico', component: TableroPublicoComponent },
+    { path: 'control/:id', component: TableroComponent },
+    { path: 'admin/torneos/:id/bracket', component: BracketComponent },
 
-  // Dashboard (lazy, protegido)
+  // Dashboard (lazy)
   {
     path: 'dashboard',
     loadComponent: () =>
       import('./pages/dashboard/dashboard.component')
         .then(m => m.DashboardComponent),
-    title: 'Panel de Administración',
-    canActivate: [authGuard]
+    title: 'Panel de Administración'
   },
-  // Tablero de control (clásico)
-  { path: 'control', component: TableroComponent, canActivate: [authGuard] },
 
-  // Público (no requiere login)
-  { path: 'publico', component: PublicoComponent },
-
-  // Equipos (sección Admin)
+  // Equipos 
   {
     path: 'admin/equipos',
     loadComponent: () =>
       import('./pages/equipos/equipos-lista.component')
         .then(m => m.EquiposListaComponent),
-    title: 'Gestión de Equipos',
-    canActivate: [authGuard]
+    title: 'Gestión de Equipos'
   },
 
-  // Jugadores (sección Admin)
+  // Jugadores 
   {
     path: 'admin/jugadores',
     loadComponent: () =>
       import('./pages/jugadores/jugadores-lista.component')
         .then(m => m.JugadoresListaComponent),
-    title: 'Gestión de Jugadores',
-    canActivate: [authGuard]
+    title: 'Gestión de Jugadores'
   },
 
-  // Usuarios (sección Admin)
   {
-    path: 'admin/usuarios',
-    loadComponent: () =>
-      import('./pages/usuarios/usuarios.lista.component')
-        .then(m => m.UsuariosListaComponent),
-    title: 'Gestión de Usuarios',
-    canActivate: [authGuard]
-  },
-
-  // Roles y Permisos (sección Admin)
-  {
-    path: 'admin/roles',
-    loadComponent: () =>
-      import('./pages/roles/roles.lista.component')
-        .then(m => m.RolesListaComponent),
-    title: 'Gestión de Roles',
-    canActivate: [authGuard]
-  },
-
+  path: 'admin/jugadores',
+  loadComponent: () =>
+    import('./pages/jugadores/jugadores-lista.component')
+      .then(m => m.JugadoresListaComponent),
+  title: 'Gestión de Jugadores'
+},
+{
+  path: 'admin/partidos/historial',
+  loadComponent: () => import('./pages/partidos/partidos-historial.component')
+    .then(m => m.PartidosHistorialComponent),
+  title: 'Historial de Partidos'
+},
+{
+  path: 'admin/torneos/nuevo',
+  loadComponent: () => import('./pages/torneos/torneos-nuevo.component')
+    .then(m => m.TorneosNuevoComponent),
+  title: 'Nuevo Torneo'
+},
+{
+  path: 'admin/partidos/nuevo',
+  loadComponent: () => import('./pages/partidos/partidos-nuevo.component')
+      .then(m => m.PartidosNuevoComponent),
+  title: 'Nuevo Partido'
+},
+{
+  path: 'admin/partidos/:id/roster',
+  loadComponent: () =>
+    import('./pages/partidos/partido-roster.component')
+      .then(m => m.PartidoRosterComponent),
+  title: 'Asignar Roster'
+},
+{
+  path: 'admin/torneos/:id/bracket',
+  loadComponent: () =>
+    import('./pages/torneos/bracket.component')
+      .then(m => m.BracketComponent),
+  title: 'Llaves del Torneo'
+},
+{
+  path: 'admin/torneos/:id/bracket',
+  loadComponent: () =>
+    import('./pages/torneos/bracket.component').then(m => m.BracketComponent)
+},
+{
+  path: 'control/:id',
+  component: TableroComponent,   
+  title: 'Tablero de control'
+},
   // Wildcard
-  { path: '**', redirectTo: 'login' }
-];  
+  { path: '**', redirectTo: 'dashboard' }
+];
