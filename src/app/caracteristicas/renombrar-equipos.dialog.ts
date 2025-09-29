@@ -23,7 +23,6 @@ export interface RenombrarResultado {
   visitante: string;
 }
 
-// 👇 Tipado explícito del formulario (typed forms)
 type RenombrarForm = {
   local: FormControl<string>;
   visitante: FormControl<string>;
@@ -72,7 +71,6 @@ type RenombrarForm = {
 `,
 })
 export class RenombrarEquiposDialog {
-  // ✅ Controles no-nullables y tipados como string
   readonly fm: FormGroup<RenombrarForm>;
 
   constructor(

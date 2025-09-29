@@ -4,7 +4,7 @@ export interface EquipoAdminDto {
   nombre: string;
   puntos: number;
   faltas: number;
-  ciudad: string;           // en backend ya es NOT NULL
+  ciudad: string;           
   logoUrl?: string | null;  // puede venir null si no hay logo
 }
 
