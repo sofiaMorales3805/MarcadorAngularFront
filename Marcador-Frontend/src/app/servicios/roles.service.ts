@@ -1,3 +1,8 @@
+/**
+ * Servicio para consultar y administrar roles.
+ * Provee endpoints para listar y (si aplica) CRUD de roles.
+ * Base URL: `Global.url`.
+ */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Global } from '../servicios/global';
@@ -12,7 +17,7 @@ export interface Role {
   providedIn: 'root'
 })
 export class RolesService {
-  private url = `${Global.url}/role`;
+  private url = `${Global.url}/roles`;
 
   constructor(private http: HttpClient) { }
 

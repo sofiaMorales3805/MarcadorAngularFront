@@ -29,6 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class Login {
   form: FormGroup;
   error = '';
+  errorMsg: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -48,18 +49,22 @@ export class Login {
   }
 
   onSubmit(): void {
-    if (this.form.valid) {
-      const loginDto: LoginDto = this.form.value;
-      this.auth.login(loginDto).subscribe({
-        next: (res) => {
-          this.auth.saveLoginData(res);
-          this.router.navigate(['/dashboard']);
-        },
-        error: (err) => {
-          this.error = '❌ Credenciales inválidas.';
-          console.error(err);
-        },
-      });
-    }
+    if (this.form.invalid) return;
+
+    const dto: LoginDto = this.form.value as LoginDto;
+
+    this.auth.login(dto).subscribe({
+      next: (res) => {
+        // guarda token y rol en localStorage
+        this.auth.saveLoginData(res);
+
+        // Ir al dashboard
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.errorMsg = 'Credenciales inválidas.';
+        console.error('login error', err);
+      }
+    });
   }
 }

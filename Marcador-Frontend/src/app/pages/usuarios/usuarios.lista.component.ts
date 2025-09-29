@@ -6,11 +6,11 @@ import { RouterModule } from '@angular/router';
 import { UsuarioFormComponent } from './usuario-form.component';
 
 @Component({
-  selector: 'app-usuario-form',
+  selector: 'app-usuario-list',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterModule,UsuarioFormComponent],
+  imports: [CommonModule, FormsModule, RouterModule, UsuarioFormComponent],
   templateUrl: './usuarios.lista.component.html',
-  styleUrl: './usuarios.lista.component.css'
+  styleUrls: ['./usuarios.lista.component.css']
 })
 export class UsuariosListaComponent {
   usuarios = signal<Usuario[]>([]);
@@ -18,16 +18,20 @@ export class UsuariosListaComponent {
   mostrarForm = false;
   error = signal('');
   search = '';
-  
+  usuarioSeleccionado: Partial<Usuario> = {};
 
 
   constructor(private service: UsuariosService) {
     this.cargar();
   }
 
+  onSaved() {
+    this.cargar();
+    this.mostrarForm = false;
+  }
   cargar() {
     this.cargando.set(true);
-    this.service.listar({ search: this.search }).subscribe({
+    this.service.listPaged({ page: 1, pageSize: 10, search: this.search }).subscribe({
       next: res => {
         this.usuarios.set(res.items);
         this.cargando.set(false);
@@ -37,6 +41,16 @@ export class UsuariosListaComponent {
         this.cargando.set(false);
       }
     });
+  }
+
+  nuevoUsuario() {
+    this.usuarioSeleccionado = {};   // usuario vacío
+    this.mostrarForm = true;
+  }
+
+  editar(usuario: Usuario) {
+    this.usuarioSeleccionado = { ...usuario };  // clona datos para editar
+    this.mostrarForm = true;
   }
 
   eliminar(usuario: Usuario) {

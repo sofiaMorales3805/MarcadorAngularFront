@@ -5,16 +5,18 @@ import { UsuariosService, Usuario } from '../../servicios/usuarios.service';
 import { RolesService, Role } from '../../servicios/roles.service';
 
 @Component({
-  selector: 'app-usuario-form.component',
+  selector: 'app-usuario-form',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './usuario-form.component.html',
-  styleUrl: './usuario-form.component.css'
+  styleUrls: ['./usuario-form.component.css']
 })
 export class UsuarioFormComponent {
   @Input() usuario: Partial<Usuario & { password?: string; roleId?: number }> = {};
   @Output() saved = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
+  mostrarForm = false;
+  usuarioSeleccionado: any = {};
 
   roles: Role[] = [];
 
@@ -41,7 +43,7 @@ export class UsuarioFormComponent {
       // Crear
       const payload = {
         username: this.usuario.username!,
-        password: this.usuario['password'] || '123456', 
+        password: this.usuario['password'] || '123456',
         roleId: this.usuario['roleId'] || 1
       };
       this.usuariosService.crear(payload).subscribe({

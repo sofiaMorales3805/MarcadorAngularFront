@@ -13,6 +13,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 
+
+interface RoleVM { id: number; name: string; }
+
 @Component({
   selector: 'app-registro-usuarios',
   standalone: true,
@@ -27,11 +30,14 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './registro-usuarios.css'
 
 })
+
+
 export class RegistroUsuarios {
   form: FormGroup;
   error = '';
   success = '';
-  roles: { id: number; name: string }[] = []; //aquí guardamos roles
+ 
+  roles: RoleVM[] = [];
 
   constructor(
     private fb: FormBuilder,

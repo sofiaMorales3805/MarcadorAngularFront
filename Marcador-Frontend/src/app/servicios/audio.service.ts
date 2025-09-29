@@ -1,3 +1,18 @@
+/**
+ * Servicio de autenticación del frontend.
+ *
+ * Responsabilidades:
+ * - Login contra el API y almacenamiento de tokens (access/refresh) en localStorage.
+ * - Lectura del usuario/rol actual desde almacenamiento local.
+ * - Renovación de access token vía refresh token.
+ * - Validación de token (ping a /auth/validate).
+ * - Registro de usuarios.
+ *
+ * Notas:
+ * - La base URL del API se toma de `Global.url`.
+ * - Access token se guarda en `auth_token`; refresh en `refresh_token`.
+ * - Expone un BehaviorSubject para conocer si el usuario está logueado.
+ */
 import { Injectable } from '@angular/core';
 
 type Sonido = 'click' | 'warn' | 'horn';
