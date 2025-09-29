@@ -3,23 +3,9 @@ import { ApplicationConfig, Injectable } from '@angular/core';
 import { provideHttpClient, HttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideAnimations } from '@angular/platform-browser/animations';
-
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideHttpClient(), 
-    provideRouter(routes),
-    provideAnimations(),
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule
-  ]
+  providers: [provideHttpClient(), provideRouter(routes)],
 };
 
 // Servicio simple para llamar a la API (.NET)

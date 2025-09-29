@@ -1,8 +1,4 @@
-/**
- * Servicio de equipos: listado, paginado, detalle y CRUD.
- * Maneja subida/borrado de logos mediante formularios (FormData).
- * Base URL: `Global.url`.
- */
+// src/app/servicios/equipos.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -25,6 +21,19 @@ export class EquiposService {
     if (ciudad) params = params.set('ciudad', ciudad);
     return this.http.get<EquipoAdminDto[]>(this.base, { params });
   }
+   logoUrl(file?: string | null): string | null {
+    if (!file) return null;
+    if (/^https?:\/\//i.test(file)) return file; 
+    return `/api/equipos/logo/${encodeURIComponent(file)}`;
+  }
+  fallbackLogo(kind: 'local'|'visita'): string {
+  return `/assets/logos/${kind}.png`;
+}
+
+//  
+logoOrFallback(file?: string | null, kind: 'local'|'visita'='local'): string {
+  return this.logoUrl(file) ?? this.fallbackLogo(kind);
+}
 
   // GET /api/equipos/:id
   getById(id: number): Observable<EquipoAdminDto> {

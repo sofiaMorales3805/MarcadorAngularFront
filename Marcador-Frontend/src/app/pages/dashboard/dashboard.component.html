@@ -5,46 +5,42 @@
   </header>
 
   <div class="grid">
-    <!-- SOLO ADMIN -->
-    <a class="card" routerLink="/admin/equipos" *ngIf="isAdmin()">
+    <a class="card" routerLink="/admin/equipos">
       <div class="icon">🏀</div>
       <h3>Equipos</h3>
       <p>Crear, editar, eliminar y listar equipos.</p>
     </a>
 
-    <!-- SOLO ADMIN -->
-    <a class="card" routerLink="/admin/jugadores" *ngIf="isAdmin()">
+    <a class="card" routerLink="/admin/jugadores">
       <div class="icon">🎽</div>
       <h3>Jugadores</h3>
       <p>Gestión de jugadores por equipo.</p>
     </a>
 
-    <!-- VISIBLE PARA TODOS LOS AUTENTICADOS -->
+
+  <a class="card" routerLink="/admin/torneos/nuevo">
+    <div class="icon">🧩</div>
+    <h3>Nuevo Torneo</h3>
+    <p>Crear playoffs (best-of) y generar llaves.</p>
+  </a>
+
+
+  <a class="card" routerLink="/admin/partidos/historial">
+    <div class="icon">📅</div>
+    <h3>Partidos</h3>
+    <p>Hoy, próximos y finalizados. Cierra marcadores.</p>
+  </a>
+
     <a class="card" routerLink="/control">
       <div class="icon">🎛️</div>
       <h3>Marcador (Operador)</h3>
       <p>Ir al tablero de control del partido.</p>
     </a>
 
-    <!-- VISIBLE PARA TODOS (si quieres solo autenticados, quítalo o protégelo con authGuard en rutas) -->
     <a class="card" routerLink="/publico">
       <div class="icon">📺</div>
       <h3>Tablero Público</h3>
       <p>Visualización para audiencia.</p>
-    </a>
-
-    <!-- SOLO ADMIN -->
-    <a class="card" routerLink="/admin/usuarios" *ngIf="isAdmin()">
-      <div class="icon">👥</div>
-      <h3>Gestión de usuarios</h3>
-      <p>Gestión de usuarios</p>
-    </a>
-
-    <!-- SOLO ADMIN -->
-    <a class="card" routerLink="/admin/roles" *ngIf="isAdmin()">
-      <div class="icon">🔑</div>
-      <h3>Gestión de roles</h3>
-      <p>Administrar permisos y accesos</p>
     </a>
   </div>
 </section>

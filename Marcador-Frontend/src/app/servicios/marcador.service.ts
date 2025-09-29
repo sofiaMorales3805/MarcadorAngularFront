@@ -1,17 +1,3 @@
-/**
- * Servicio del marcador/partido en tiempo real.
- *
- * Capacidades:
- * - Leer estado global y estado del tiempo (cronómetro).
- * - Sumar/restar puntos, registrar faltas.
- * - Avanzar cuartos y gestionar prórrogas.
- * - Iniciar/pausar/reanudar/reiniciar reloj.
- * - Renombrar equipos (en ficha activa o creando nueva).
- * - Finalizar/terminar partido (manual/automático) y crear nuevo.
- *
- * Base URL: `Global.url`.
- */
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
@@ -104,15 +90,16 @@ export class MarcadorService {
 
   // Nuevo partido despues de que guardo
   nuevoPartido(): Observable<MarcadorGlobal> {
-  return this.http.post<MarcadorGlobal>(`/api/marcador/nuevo`, {});
+    return this.http.post<MarcadorGlobal>(`/api/marcador/nuevo`, {});
   }
+
   //Termina antes del tiempo estipulado
   terminarPartido(motivo?: string) {
     return this.http.post<MarcadorGlobal>(`${this.base}/partido/terminar`, { motivo });
   }
+
   //Se guarda cuando ya termino el tiempo estipulado
   finalizarAuto() {
-  return this.http.post<MarcadorGlobal>(`${this.base}/partido/finalizar-auto`, {});
+    return this.http.post<MarcadorGlobal>(`${this.base}/partido/finalizar-auto`, {});
   }
-
 }
