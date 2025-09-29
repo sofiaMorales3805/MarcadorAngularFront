@@ -8,10 +8,7 @@ import { MarcadorService } from '../servicios/marcador.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router } from '@angular/router';       
-import { PartidosService, PartidoDto } from '../servicios/partidos.service'; 
-import { EquiposService } from '../servicios/equipos.service';
-import { TorneosService } from '../servicios/torneos.service';   
+
 
 // Interfaces 
 interface Equipo {
@@ -49,11 +46,6 @@ interface MarcadorGlobal {
 export class TableroComponent implements OnInit, OnDestroy {
   private svc = inject(MarcadorService);
 
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private partidos = inject(PartidosService);
-  private equipos = inject(EquiposService);
-  private torneos = inject(TorneosService);
   // estado UI
   private _datos = signal<MarcadorGlobal | null>(null);
   private _error = signal<string>('');
@@ -66,57 +58,14 @@ export class TableroComponent implements OnInit, OnDestroy {
   private _ticker$?: Subscription;
   private _resync$?: Subscription;
 
-  // bandera para auto-avance
+  // bandera para auto‑avance
   autoAvanzar = true;
   // evita múltiples disparos en el mismo final
   private _yaAvanceEnEsteCero = false;
 
-  // LOGO: cache de equipos y URLs calculadas
-  private _equiposCache: Array<{id:number; nombre:string; logoFileName?:string}> = [];
-  logoLocalUrl?: string | null = null;
-  logoVisitaUrl?: string | null = null;
-
   duracionMin: number = 10;
 
-  // LOGO: 
-private logoUrl(file?: string | null): string | null {
-  if (!file) return null;                             
-  if (/^https?:\/\//i.test(file)) return file;        
-  return `/api/equipos/logo/${encodeURIComponent(file)}`;
-}
-  private setLogosByIds(localId?: number|null, visitaId?: number|null) {
-    if (!this._equiposCache?.length) return;
-    const eL = localId ? this._equiposCache.find(e => e.id === localId) : undefined;
-    const eV = visitaId ? this._equiposCache.find(e => e.id === visitaId) : undefined;
-    this.logoLocalUrl  = this.logoUrl(eL?.logoFileName);
-    this.logoVisitaUrl = this.logoUrl(eV?.logoFileName);
-  }
-  private setLogosByNames(localNombre?: string, visitaNombre?: string) {
-    if (!this._equiposCache?.length) return;
-    const norm = (s?:string) => (s ?? '').trim().toLowerCase();
-    const eL = this._equiposCache.find(e => norm(e.nombre) === norm(localNombre));
-    const eV = this._equiposCache.find(e => norm(e.nombre) === norm(visitaNombre));
-    this.logoLocalUrl  = this.logoUrl(eL?.logoFileName);
-    this.logoVisitaUrl = this.logoUrl(eV?.logoFileName);
-  }
-
   ngOnInit(): void {
-    // LOGO: precargar catálogo de equipos (una vez)
-    this.equipos.list().subscribe({
-      next: (arr: any[]) => {
-        this._equiposCache = (arr || []).map(e => ({
-          id: e.id, nombre: e.nombre ?? '', logoFileName: e.logoFileName ?? e.logo
-        }));
-        // si ya hay datos del marcador, completar logos por nombre
-        const d = this._datos();
-        if (d) this.setLogosByNames(d.equipoLocal?.nombre, d.equipoVisitante?.nombre);
-      }
-    });
-
-    // si viene /control/:id, inicializa tablero con ese partido
-    const partidoIdParam = this.route.snapshot.paramMap.get('id');
-    if (partidoIdParam) this.inicializarDesdePartido(Number(partidoIdParam));
-
     this.cargar();
     // tick local: 1s para que la UI baje el contador cuando el reloj está corriendo
     this._ticker$ = interval(1000).subscribe(() => {
@@ -128,13 +77,13 @@ private logoUrl(file?: string | null): string | null {
 
         const next = s - 1;
 
-        // final automático al llegar a 0 en 4º cuarto (sin prórroga)
+        // --- NUEVO: final automático al llegar a 0 en 4º cuarto (sin prórroga)
         if (next === 0 && !d.enProrroga && d.cuartoActual === 4) {
           if (!this._autoFinalizado) this.finalizarAuto();
           // no avanzar cuarto si se finaliza
           this._yaAvanceEnEsteCero = true;
         } else if (next === 0) {
-          // cuando llega a 0, podemos auto-avanzar (solo si no es el fin del partido)
+          // cuando llega a 0, podemos auto‑avanzar (solo si no es el fin del partido)
           if (this.autoAvanzar && !this._yaAvanceEnEsteCero) {
             this._yaAvanceEnEsteCero = true;
             // dispara avanzar cuarto
@@ -169,6 +118,7 @@ private logoUrl(file?: string | null): string | null {
     this._resync$?.unsubscribe();
   }
 
+
   datos() { return this._datos(); }
   error() { return this._error(); }
   cargando() { return this._cargando(); }
@@ -196,9 +146,6 @@ private logoUrl(file?: string | null): string | null {
       next: (d: MarcadorGlobal) => {
         this._datos.set(d);
         this._segundosLocal.set(d.tiempoRestante);
-        // LOGO: cuando llega el estado, resolvemos por NOMBRE (modo libre)
-        this.setLogosByNames(d?.equipoLocal?.nombre, d?.equipoVisitante?.nombre);
-
         if (d.tiempoRestante > 0) this._yaAvanceEnEsteCero = false;
         this._partidoTerminado = !d.relojCorriendo && d.cuartoActual >= 4 && !d.enProrroga 
                                && d.tiempoRestante === 0;
@@ -319,8 +266,6 @@ private logoUrl(file?: string | null): string | null {
     this.svc.renombrarEquiposNuevo(nuevoLocal ?? undefined, nuevoVisitante ?? undefined).subscribe({
       next: (res: MarcadorGlobal) => {
         this._datos.set(res);
-        // LOGO: refrescar por nombre
-        this.setLogosByNames(res?.equipoLocal?.nombre, res?.equipoVisitante?.nombre);
         this._esperando.set(false);
       },
       error: () => { this._esperando.set(false); }
@@ -335,12 +280,7 @@ private logoUrl(file?: string | null): string | null {
 
     this._esperando.set(true);
     this.svc.renombrarEquiposNuevo(nuevoLocal ?? undefined, nuevoVis ?? undefined).subscribe({
-      next: (res) => { 
-        this._datos.set(res); 
-        // LOGO: refrescar por nombre
-        this.setLogosByNames(res?.equipoLocal?.nombre, res?.equipoVisitante?.nombre);
-        this._esperando.set(false); 
-      },
+      next: (res) => { this._datos.set(res); this._esperando.set(false); },
       error: () => this._esperando.set(false)
     });
   }
@@ -351,8 +291,6 @@ private logoUrl(file?: string | null): string | null {
       next: (d) => { 
         this._datos.set(d); 
         this._segundosLocal.set(d.tiempoRestante); 
-        // LOGO: al iniciar limpio aún no hay nombres mapeables → reset
-        this.logoLocalUrl = this.logoVisitaUrl = null;
         this._esperando.set(false); 
         this._yaAvanceEnEsteCero = false;
         this._autoFinalizado = false; 
@@ -420,84 +358,6 @@ private logoUrl(file?: string | null): string | null {
         this._partidoTerminado = true;   // bloquea botones
       },
       error: () => this._esperando.set(false)
-    });
-  }
-
-  // carga partido y prepara el tablero usando métodos existentes del MarcadorService
-  private inicializarDesdePartido(id: number) {
-    this.partidos.getById(id).subscribe({
-      
-      next: (p: PartidoDto) => {
-        if (p.torneoId && p.torneoId > 0) {
-  this.torneos.getById(p.torneoId).subscribe({
-    next: (t) => localStorage.setItem('marcador.titulo', t.nombre),
-    error: () => localStorage.setItem('marcador.titulo', `Torneo #${p.torneoId}`)
-  });
-} else {
-  localStorage.setItem('marcador.titulo', 'Amistoso');
-}
-        // LOGO: al venir con ids del partido, resolvemos logo por ID
-        this.setLogosByIds(p.equipoLocalId, p.equipoVisitanteId);
-
-        // Traemos nombres para renombrar el tablero (si procede)
-        this.equipos.list().subscribe({
-          next: (arr: any[]) => {
-            const nombreLocal  = (arr.find(x => x.id === p.equipoLocalId)?.nombre)  ?? `Equipo ${p.equipoLocalId}`;
-            const nombreVisita = (arr.find(x => x.id === p.equipoVisitanteId)?.nombre) ?? `Equipo ${p.equipoVisitanteId}`;
-
-            this._esperando.set(true);
-            this.svc.nuevoPartido().subscribe({
-              next: () => {
-                this.svc.renombrarEquipos(nombreLocal, nombreVisita).subscribe({
-                  next: () => {
-                    const segundos = this.duracionMin * 60;
-                    this.svc.reiniciarTiempo(segundos).subscribe({
-                      next: () => {
-                        this._esperando.set(false);
-                        this.partidos.cambiarEstado(p.id, 'EnJuego').subscribe({ next: () => {}, error: () => {} });
-                        this.cargar(false);
-                      },
-                      error: () => this._esperando.set(false)
-                    });
-                  },
-                  error: () => this._esperando.set(false)
-                });
-              },
-              error: () => this._esperando.set(false)
-            });
-          },
-          error: () => { /* sin nombres, seguimos con id/nombre por defecto */ }
-        });
-      },
-      error: () => { /* si falla partido, no hacemos nada especial */ }
-    });
-  }
-
-  // terminar partido vinculado usando el marcador actual de la UI
-  onTerminarPartidoVinculado() {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam ? Number(idParam) : NaN;
-
-    if (!Number.isFinite(id)) {
-      this.onTerminar();
-      return;
-    }
-
-    const d = this._datos();
-    const ml = d?.equipoLocal.puntos ?? 0;
-    const mv = d?.equipoVisitante.puntos ?? 0;
-
-    this._esperando.set(true);
-    this.partidos.cerrarPartido(id, ml, mv).subscribe({
-      next: () => {
-        this._partidoTerminado = true;
-        this._esperando.set(false);
-        this.router.navigate(['/admin/partidos/historial']);
-      },
-      error: () => {
-        this._esperando.set(false);
-        alert('No se pudo cerrar el partido');
-      }
     });
   }
 }

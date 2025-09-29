@@ -7,28 +7,17 @@
   <ng-container *ngIf="datos() as d">
 
     <!-- Cabecera: nombres y reloj -->
-<!-- Cabecera: nombres y reloj -->
-<div class="ctl-header">
-  <div class="team-name left">
-    <img *ngIf="logoLocalUrl" [src]="logoLocalUrl" alt="Logo local" style="height:48px;vertical-align:middle;margin-right:8px;border-radius:8px;">
-    <b>{{ d.equipoLocal.nombre }}</b>
-  </div>
-
-  <div class="clock">{{ mmss(tiempoMostrado()) }}</div>
-
-  <div class="team-name right">
-    <b>{{ d.equipoVisitante.nombre }}</b>
-    <img *ngIf="logoVisitaUrl" [src]="logoVisitaUrl" alt="Logo visitante" style="height:48px;vertical-align:middle;margin-left:8px;border-radius:8px;">
-  </div>
-
-  <div class="subline">
-    <ng-container *ngIf="!d.enProrroga; else prorrogaTpl">
-      Cuarto: <b>{{ d.cuartoActual }}</b> / 4
-    </ng-container>
-    <ng-template #prorrogaTpl><b>Prórroga {{ d.numeroProrroga }}</b></ng-template>
-  </div>
-</div>
-
+    <div class="ctl-header">
+      <div class="team-name left"><b>{{ d.equipoLocal.nombre }}</b></div>
+      <div class="clock">{{ mmss(tiempoMostrado()) }}</div>
+      <div class="team-name right"><b>{{ d.equipoVisitante.nombre }}</b></div>
+      <div class="subline">
+        <ng-container *ngIf="!d.enProrroga; else prorrogaTpl">
+          Cuarto: <b>{{ d.cuartoActual }}</b> / 4
+        </ng-container>
+        <ng-template #prorrogaTpl><b>Prórroga {{ d.numeroProrroga }}</b></ng-template>
+      </div>
+    </div>
 
     <!-- Bloque reloj / navegación -->
     <div class="ctl-actions">
@@ -38,13 +27,7 @@
       <button mat-stroked-button (click)="iniciar()"  [disabled]="corriendo() || !datos() || partidoTerminado()">  <span class="material-symbols-outlined">play_arrow</span>Iniciar</button>
       <button mat-stroked-button (click)="pausar()"   [disabled]="!corriendo()">  <span class="material-symbols-outlined">pause</span>Pausar</button>
       <button mat-stroked-button (click)="reiniciar()"><span class="material-symbols-outlined">restart_alt</span>Reiniciar {{ duracionMin }}:00</button>
-
-      <button mat-stroked-button (click)="onTerminar()" [disabled]="!corriendo() || partidoTerminado()"> 
-        <span class="material-symbols-outlined">cancel</span>Terminar partido
-      </button>
-      <button mat-stroked-button color="primary" (click)="onTerminarPartidoVinculado()" [disabled]="partidoTerminado()">
-        Terminar y guardar
-      </button>
+      <button mat-stroked-button (click)="onTerminar()" [disabled]="!corriendo() || partidoTerminado()"> <span class="material-symbols-outlined">cancel</span>Terminar partido</button>
 
       <div class="duracion">
         <label>Duración (min)</label>
@@ -92,7 +75,7 @@
 
       <label class="auto">
         <input type="checkbox" [checked]="autoAvanzar" (change)="onAutoChange($event)">
-        Auto-avanzar al llegar a 0
+        Auto‑avanzar al llegar a 0
       </label>
 
       <button mat-stroked-button (click)="cargar()" [disabled]="esperando()">Refrescar</button>

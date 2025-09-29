@@ -90,16 +90,15 @@ export class MarcadorService {
 
   // Nuevo partido despues de que guardo
   nuevoPartido(): Observable<MarcadorGlobal> {
-    return this.http.post<MarcadorGlobal>(`/api/marcador/nuevo`, {});
+  return this.http.post<MarcadorGlobal>(`/api/marcador/nuevo`, {});
   }
-
   //Termina antes del tiempo estipulado
   terminarPartido(motivo?: string) {
     return this.http.post<MarcadorGlobal>(`${this.base}/partido/terminar`, { motivo });
   }
-
   //Se guarda cuando ya termino el tiempo estipulado
   finalizarAuto() {
-    return this.http.post<MarcadorGlobal>(`${this.base}/partido/finalizar-auto`, {});
+  return this.http.post<MarcadorGlobal>(`${this.base}/partido/finalizar-auto`, {});
   }
+
 }

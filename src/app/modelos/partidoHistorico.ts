@@ -1,6 +1,6 @@
 export interface PartidoHistorico {
   id: number;
-  fecha: string;              
+  fecha: string;              // llega como ISO string en JSON
   estado: string;
   equipoLocalId: number;
   equipoVisitanteId: number;
